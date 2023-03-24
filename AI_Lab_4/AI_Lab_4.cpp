@@ -10,28 +10,28 @@ constexpr int column = 9; //кол - во столбцов
 constexpr int strok = 100;
 
 int main_selection[number][column + 1] = {
-		{0, 0,2,3,4,5,6,7,8,9},
-		{1, 2,3,0,5,6,7,8,9,10},
-		{2, 3,4,5,6,7,8,9,10,11},
-		{3, 4,5,6,7,8,9,10,11,12},
-		{4, 5,6,7,0,9,10,11,12,13},
-		{5, 6,7,8,9,17,1,6,13,14},
-		{6, 7,8,9,10,11,12,13,1,15},
-		{7, 8,9,10,11,9,13,14,15,1},
-		{8, 9,35,11,12,13,14,55,1,2},
-		{9, 10,11,12,-5,14,15,1,2,3},
+		{0, 5,5,3,4,10,5,10,9,9},
+		{1, 2,3,5,10,6,7,8,14,10},
+		{2, 0,9,5,11,6,5,17,7,16},
+		{3, 2,11,12,4,13,6,18,7,9},
+		{4, 8,4,5,4,10,7,11,13,9},
+		{5, 100,9,8,4,14,1,6,10,16},
+		{6, 4,5,12,7,12,12,13,1,15},
+		{7, 6,12,11,5,8,16,14,100,7},
+		{8, 5,13,1,0,9,20,27,10,3},
+		{9, 5,7,5,3,9,8,10,9,6},
 };
-const int tmp_mass[number][column + 1]={
-		{0, 0,2,3,4,5,6,7,8,9},
-		{1, 2,3,0,5,6,7,8,9,10},
-		{2, 3,4,5,6,7,8,9,10,11},
-		{3, 4,5,6,7,8,9,10,11,12},
-		{4, 5,6,7,0,9,10,11,12,13},
-		{5, 6,7,8,9,17,1,6,13,14},
-		{6, 7,8,9,10,11,12,13,1,15},
-		{7, 8,9,10,11,9,13,14,15,1},
-		{8, 9,35,11,12,13,14,55,1,2},
-		{9, 10,11,12,-5,14,15,1,2,3},
+const int tmp_mass[number][column + 1] = {
+		{0, 12,8,8,7,11,6,16,17,10},
+		{1, 7,9,3,5,12,12,13,15,8},
+		{2, 0,9,5,11,6,5,17,7,16},
+		{3, 2,11,12,4,13,6,18,7,9},
+		{4, 8,4,5,4,10,7,11,13,9},
+		{5, 14,0,6,-8,6,5,12,7,8},
+		{6, 4,5,12,7,12,12,13,1,15},
+		{7, 6,12,11,5,8,16,14,27,7},
+		{8, 5,13,1,0,9,20,27,10,3},
+		{9, 8,5,3,5,7,6,11,16,9},
 };
 
 //Цифры в двоичном предствалении
@@ -1060,11 +1060,12 @@ const int number_err_9[strok][column + 1] = {
 
 void MAIN_FUNC(const int num[][column + 1], int m_selection[][column + 1]) {
 
+	vector<int> prer_err;
+	int ret = 0;
 	int err = 0;
-	int point = 0;
-	while (point < 100) {
+restart:
+	for (int point = 0; point < strok; point++) {
 		bool flag = false;
-
 		vector <int> weights = {}; //вектор полученных весов
 		vector <int> number_weight = {}; //номер числа полученного веса
 
@@ -1099,14 +1100,23 @@ void MAIN_FUNC(const int num[][column + 1], int m_selection[][column + 1]) {
 				}
 			}
 		}
-		point++;
 	}
-	cout << "Err = " << err << endl;
+	ret++;
+	prer_err.push_back(err);
+	cout << ret << endl;
+	cout << "check_err = " << err << endl;
+	if (ret < 2) { err = 0; goto restart; }
+	
+	if (prer_err[ret-2] > prer_err[ret - 1]) {
+		err = 0; goto restart;
+	}
+
+	cout << "Err = " << (*min_element(prer_err.begin(), prer_err.end()))/2 << endl;
 }
 
 void print_main(int m_selection[][column + 1])
 {
-	for(int i = 0; i < number; i++)
+	for (int i = 0; i < number; i++)
 	{
 		for (int j = 1; j < column + 1; j++)
 		{
@@ -1116,9 +1126,9 @@ void print_main(int m_selection[][column + 1])
 }
 void old_main()
 {
-	for(int i = 0; i < number; i++)
+	for (int i = 0; i < number; i++)
 	{
-		for(int j = 0; j < column+1; j++)
+		for (int j = 0; j < column + 1; j++)
 		{
 			main_selection[i][j] = tmp_mass[i][j];
 		}
